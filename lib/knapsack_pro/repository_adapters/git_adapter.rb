@@ -45,11 +45,11 @@ module KnapsackPro
           `git fetch --shallow-since "one month ago" --quiet 2>/dev/null`
         end
 
-        `git log --since "one month ago" 2>/dev/null | git shortlog --summary --email 2>/dev/null`
+        `git --no-pager log --since "one month ago" 2>/dev/null | git --no-pager shortlog --summary --email 2>/dev/null`
       end
 
       def git_build_author
-        `git log --format="%aN <%aE>" -1 2>/dev/null`
+        `git --no-pager log --format="%aN <%aE>" -1 2>/dev/null`
       end
 
       def working_dir
