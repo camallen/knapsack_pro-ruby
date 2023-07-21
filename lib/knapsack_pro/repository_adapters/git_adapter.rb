@@ -15,6 +15,7 @@ module KnapsackPro
       end
 
       def commit_authors
+        KnapsackPro.logger.debug("Looking up the commit authors from git")
         authors = git_commit_authors
           .split("\n")
           .map { |line| line.strip }
@@ -24,6 +25,7 @@ module KnapsackPro
           end
 
         raise if authors.empty?
+        KnapsackPro.logger.debug("Found the authorse and moving on with life")
 
         authors
       rescue Exception
@@ -31,6 +33,7 @@ module KnapsackPro
       end
 
       def build_author
+        KnapsackPro.logger.debug("Found the authorse and moving on with life")
         author = KnapsackPro::MaskString.call(git_build_author.strip)
         raise if author.empty?
         author
@@ -42,13 +45,21 @@ module KnapsackPro
 
       def git_commit_authors
         if KnapsackPro::Config::Env.ci?
+          KnapsackPro.logger.debug("running CI git fetch in git_commit_authors lookup")
           `git fetch --shallow-since "one month ago" --quiet 2>/dev/null`
         end
 
-        `git --no-pager log --since "one month ago" 2>/dev/null | git --no-pager shortlog --summary --email 2>/dev/null`
+        KnapsackPro.logger.debug("getting the authors from the git log")
+
+        results = `git --no-pager log --since "one month ago" 2>/dev/null | git --no-pager shortlog --summary --email 2>/dev/null`
+
+        KnapsackPro.logger.debug("done getting the authors from the git log!")
+        results
       end
 
       def git_build_author
+        KnapsackPro.logger.debug("getting the build author from the git log!")
+
         `git --no-pager log --format="%aN <%aE>" -1 2>/dev/null`
       end
 
