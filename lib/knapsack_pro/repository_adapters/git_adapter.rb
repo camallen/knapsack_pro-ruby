@@ -46,8 +46,7 @@ module KnapsackPro
       def git_commit_authors
         if KnapsackPro::Config::Env.ci? && !ENV.fetch("SKIP_KP_GIT_FETCH", false)
           KnapsackPro.logger.debug("running CI git fetch in git_commit_authors lookup")
-          # `git fetch --shallow-since "one month ago" --quiet 2>/dev/null`
-          `git fetch --shallow-since "one month ago"`
+          `git fetch --shallow-since '$(date -v-1m +%Y-%m-%d)' --quiet 2>/dev/null`
         end
 
         KnapsackPro.logger.debug("getting the authors from the git log")
